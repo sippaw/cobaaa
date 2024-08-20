@@ -11,7 +11,10 @@ const register = async (req, res) => {
       if(user){
           return res.status(404).json({ message: 'email sudah ada' });
       }
-      const newuser = await Users.create({ username, email, password,no_telp,alamat });
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      const newuser = await Users.create({ username, email, password : hashedPassword, no_telp,alamat });
       res.status(201).json({ message: 'User registered successfully', newuser });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -42,7 +45,7 @@ const register = async (req, res) => {
       }
   
       // Generate JWT
-      const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '1h' });
       res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 1 hour expiration
       return res.json({ message: "Login berhasil" });
     } catch (error) {

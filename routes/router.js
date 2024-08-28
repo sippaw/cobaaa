@@ -1,5 +1,5 @@
-const router = require("express").Router();
+// const router = require("express").Router();
 
-router.use("/", require("./autentikasi"));
+// router.use("/", require("./autentikasi"));
 
-module.exports = router;
+// module.exports = router;
